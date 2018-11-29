@@ -4,4 +4,4 @@ Group Members:
 
   Adam Weesner - aweesner@csu.fullerton.edu
   
-  Erik Lipsky -
+  Erik Lipsky - eriklipsky@csu.fullerton.edu
