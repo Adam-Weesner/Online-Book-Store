@@ -1,6 +1,30 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
+	
+	</head>
+
 <div class="header">
-  <img src="Parana.png" alt="logo" /> <img src="Slogan.png" alt="logo" />
-  <h1>bookstore</h1>
+	<h1 style="background-color:#cccccc;">
+	<img src="Parana.png" alt="logo" /></h1>
+</div>
+
+<form class="pure-form">
+    <input type="text" class="pure-input-rounded">
+    <button type="submit" class="pure-button">Search</button>
+</form>
+
+<link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
+	
+<div class="pure-menu pure-menu-horizontal">
+	<ul class="pure-menu-list">
+		<li class="pure-menu-item"><a class="pure-menu-link href="home.php">Home</a></li>
+		<li class="pure-menu-item"><a class="pure-menu-link href="cart.php">Cart</a></li>
+	</ul>
+</div>
+
+
+<div>
     <style scoped>
 
         .button-success,
@@ -53,8 +77,9 @@ if(isset($_SESSION["cart_item"])){
 	
 	<a href="?action=empty"><button class="button-error pure-button">Empty Cart</button></a>
 
-	<a href="../" title="Cart"><button class="button-secondary pure-button">Continue Shopping</button></a>
+	<a href="home.php" title="Cart"><button class="button-secondary pure-button">Continue Shopping</button></a>
 	
-	<a href="../" title="Cart"><button class="button-success pure-button">Checkout</button></a>
+	<a href="checkout.php" title="Cart"><button class="button-success pure-button">Checkout</button></a>
 	</div>
 </div>
+</html>
