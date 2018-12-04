@@ -20,10 +20,10 @@
 
 <div class="pure-menu pure-menu-horizontal">
 	<ul class="pure-menu-list">
-	      	<li class="pure-menu-item"><a href="home.php" class="pure-menu-link">Home</a></li>
-		<li class="pure-menu-item"><a href="cart.php" class="pure-menu-link">Cart</a></li>
 <li class="pure-menu-item"><a href="browse.php" class="pure-menu-link">Browse Books</a></li>
 <li class="pure-menu-item"><a href="search.php" class="pure-menu-link">Search Books</a></li>
+<li class="pure-menu-item"><a href="personal.php" class="pure-menu-link">Edit Information</a></li>
+		<li class="pure-menu-item"><a href="cart.php" class="pure-menu-link">Cart</a></li>
 	</ul>
 
 <body class="text-center">
