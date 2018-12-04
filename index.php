@@ -20,14 +20,19 @@ $sql = "CREATE TABLE IF NOT EXISTS MemberList (
 	password VARCHAR(30)
 	)";
 
+	$sql2 = mysqli_query($db, $sql);
+
 	$user = $_POST['userID'];
 	$query = "SELECT * FROM MemberList WHERE userID = '$user'";
 	$result = mysqli_query($db, $query);
 	$rows = $result->num_rows;
 
+	session_start();
+	$_SESSION['userID'] = $user;
+
 	if(isset($_POST['submit']) && $rows != 0) {
 		try {
-				echo "<script type='text/javascript'>location.href = 'files/home.php';</script>";
+				echo "<script type='text/javascript'>location.href = 'files/browse.php';</script>";
 			
 		}
 		catch(Exception $e){
