@@ -2,35 +2,40 @@
 <html lang="en">
 
 <?php
-  $db = new mysqli('localhost','root','root','Members');
+  $db = new mysqli('localhost','root','root','bookstore');
   if ($db->connect_error) {
         die("Connection failed: " . $db->connect_error);
     }
 
-$sql = "CREATE TABLE IF NOT EXISTS MemberList (
-	fName VARCHAR(30),
-	lName VARCHAR(30),
-	street VARCHAR(30),
-	city VARCHAR(30),
-	state VARCHAR(30),
-	zip VARCHAR(30),
-	phone VARCHAR(30),
-	email VARCHAR(30),
-	userID VARCHAR(30),
-	password VARCHAR(30)
-	)";
+$sql = "create table MemberList (
+fName VARCHAR(30),
+lName VARCHAR(30),
+street VARCHAR(30),
+city VARCHAR(30),
+state VARCHAR(30),
+zip VARCHAR(30),
+phone VARCHAR(30),
+email VARCHAR(30),
+userID VARCHAR(30),
+password VARCHAR(30)
+)";
 
-	$sql2 = mysqli_query($db, $sql);
+$temp1 = mysqli_query($db, $sql);
 
 	$user = $_POST['userID'];
 	$query = "SELECT * FROM MemberList WHERE userID = '$user'";
 	$result = mysqli_query($db, $query);
 	$rows = $result->num_rows;
 
+	$password = $_POST['password'];
+	$query6 = "SELECT * FROM MemberList WHERE password = '$password'";
+	$result6 = mysqli_query($db, $query6);
+	$rows2 = $result6->num_rows;
+
 	session_start();
 	$_SESSION['userID'] = $user;
 
-	if(isset($_POST['submit']) && $rows != 0) {
+	if(isset($_POST['submit']) && $rows != 0 && $rows2 != 0) {
 		try {
 				echo "<script type='text/javascript'>location.href = 'files/browse.php';</script>";
 			
