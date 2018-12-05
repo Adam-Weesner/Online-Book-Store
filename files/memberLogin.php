@@ -13,31 +13,35 @@
 </head>
 
 <?php
-  $db = new mysqli('localhost','root','root','Members');
+  $db = new mysqli('localhost','root','root','bookstore');
   if ($db->connect_error) {
         die("Connection failed: " . $db->connect_error);
     }
+if(isset($_POST['submit']) && !empty($_POST['userID']) && !empty($_POST['password'])) {
 
-  //Validating the form after submission
-	if(isset($_POST['submit']) && !empty($_POST['userID']) && !empty($_POST['password'])) {
-		$insertCustomer = "INSERT INTO MemberList (fName, lName, street, city, state, zip, phone, email, userID, password) VALUES ('".$_POST['fName']."','".$_POST['lName']."','".$_POST['street']."','".$_POST['city']."','".$_POST['state']."','".$_POST['zip']."','".$_POST['phone']."','".$_POST['email']."','".$_POST['userID']."', '".$_POST['password']."')";
 		try {
+		$insertCustomer = "INSERT INTO MemberList (fName, lName, street, city, state, zip, phone, email, userID, password) VALUES ('".$_POST['fName']."','".$_POST['lName']."','".$_POST['street']."','".$_POST['city']."','".$_POST['state']."','".$_POST['zip']."','".$_POST['phone']."','".$_POST['email']."','".$_POST['userID']."', '".$_POST['password']."')";
+
 		$result = $db->query($insertCustomer);
+
+$createDB = "CREATE table ".$_POST['userID']." (book VARCHAR(30), total FLOAT(10,2) NOT NULL DEFAULT '0.00')";
+
+		$result2 = $db->query($createDB);
+
+        echo "<script type='text/javascript'>location.href = '../index.php';</script>";
 		}
 		catch(Exception $e) {
           echo "Message:" .$e->getMessage();
         }
  
-        echo "<script type='text/javascript'>location.href = '../index.php';</script>";
 	}
 	else {
 	?>
 
 <body class="text-center">
-	<img class="logo" src="Parana.png">
-		<h1 class="h3 mb-3 font-weight-normal"><font color="white">Please sign in</font></h1>
-
 	<div class='container welcome'>
+	<img class="logo" src="Parana.png">
+		<h1 class="h3 mb-3 font-weight-normal"><font color="white">Registration</font></h1>
       	<form class='form-signin' method='post'>
 		<label for="fName" class="sr-only">First Name</label>
 		<input type="text" name="fName" class="form-control" placeholder="First Name" required="true" >
@@ -67,7 +71,7 @@
 		<input type="text" name="userID" class="form-control" placeholder="User ID" required="true" >
 
 		<label for="password" class="sr-only">Password</label>
-		<input type="text" name="password" class="form-control" placeholder="Password" required="true" >
+		<input type="text" name="password" class="form-control" placeholder="Password" required="true" ><br>
 
       		<input type='submit' name='submit' value='Register' class='btn btn-primary buy'>
       	</form>		

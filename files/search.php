@@ -23,7 +23,16 @@
 <li class="pure-menu-item"><a href="browse.php" class="pure-menu-link">Browse Books</a></li>
 <li class="pure-menu-item"><a href="search.php" class="pure-menu-link">Search Books</a></li>
 <li class="pure-menu-item"><a href="personal.php" class="pure-menu-link">Edit Information</a></li>
-		<li class="pure-menu-item"><a href="cart.php" class="pure-menu-link">Cart</a></li>
+		<li class="pure-menu-item"><a href="cart.php" class="pure-menu-link">Order Status</a></li>
+		<li class="pure-menu-item"><a href="../index.php" class="pure-menu-link">Log Out</a></li>
+
+<form method='post'><br>
+	<label for="subject" class="sr-only">Add ISBN to Cart:</label>
+			<input type="text" name="isbn" class="form-control" placeholder="ISBN" required="true">
+	<button class="btn btn-lg btn-primary btn-block" name='add' type="submit">Add</button>
+	<button class="btn btn-lg btn-primary btn-block" name='one' type="submit">1-Click Checkout</button>
+</form>
+
 	</ul>
 
 <body class="text-center">
@@ -31,7 +40,7 @@
 		<h1 class="h3 mb-3 font-weight-normal"><font color="white">Search for a Subject:</font></h1>
 
 <select name="selection" method='post'>
-  <option value="author"  >Author</option>
+  <option value="author">Author</option>
   <option value="title">Title</option>
 </select>
 <br><br>
@@ -85,6 +94,38 @@
 		}
 		catch(Exception $e){
 			echo "<script>alert('Cannot find subject. Please try again.');</script>";
+		}
+	}
+
+session_start();
+	$_SESSION['isbn'] = $_POST['isbn'];
+
+	if(isset($_POST['add'])) {
+		try {
+				echo "<script type='text/javascript'>location.href = 'cart.php';</script>";
+			
+		}
+		catch(Exception $e){
+		}
+	}
+if(isset($_POST['one'])) {
+		try {
+
+$isbn = $_POST['isbn'];
+$look = "SELECT * FROM books WHERE isbn = '$isbn'";
+$result2 = mysqli_query($db,$look);
+$row2 = mysqli_fetch_object($result2);
+$title = $row2->title;
+$price = $row2->price;
+echo "<p><font color='white'>$user and $title</font></p>";
+$update = "INSERT INTO $user (book, total) VALUES ('$title', $price)";
+
+$result3 = $db->query($update);
+		
+				echo "<script type='text/javascript'>location.href = 'cart.php';</script>";
+			
+		}
+		catch(Exception $e){
 		}
 	}
 ?>
