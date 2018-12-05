@@ -35,7 +35,7 @@
 
 <form method='post'><br>
 	<label for="subject" class="sr-only">Add ISBN to Cart (May need to double-click):</label>
-			<input type="text" name="isbn" value="<?php echo "$isbn"; ?>" class="form-control" placeholder="ISBN" required="true">
+			<input type="text" name="bookIsbn" value="<?php echo "$isbn"; ?>" class="form-control" placeholder="ISBN" required="true">
 	<button class="btn btn-lg btn-primary btn-block" name='add' type="submit">Add</button>
 </form><br>
 
@@ -71,24 +71,25 @@ echo "</tr>";
 echo "</table>";
 
 
-
 if(isset($_POST['add'])) {
 
-		try {
 
-$look = "SELECT * FROM books WHERE isbn = '$isbn'";
+$temp = $_POST['bookIsbn'];
+$look = "SELECT * FROM books WHERE isbn = '$temp'";
 $result2 = mysqli_query($db,$look);
 $row2 = mysqli_fetch_object($result2);
 $title = $row2->title;
-$price = $row2->price;
+$price = $row2->price
+;
 
-echo "<p><font color='white'>$user and $title</font></p>";
-$update = "INSERT INTO $user (book, total) VALUES ('$title', $price)";
-$result3 = $db->query($update);
-			
-		}
-		catch(Exception $e){
-		}
+$update2 = "INSERT INTO $user (book, total) VALUES ('$title', $price)";
+
+if(mysqli_query($db, $update2)){
+	header("Refresh:0");
+} else{
+    echo "ERROR: Could not able to execute $update2. " . mysqli_error($db);
+}
+		
 }
 ?>
 </body>

@@ -126,12 +126,16 @@ $result2 = mysqli_query($db,$look);
 $row2 = mysqli_fetch_object($result2);
 $title = $row2->title;
 $price = $row2->price;
-echo "<p><font color='white'>$user and $title</font></p>";
-$update = "INSERT INTO $user (book, total) VALUES ('$title', $price)";
 
-$result3 = $db->query($update);
+$update2 = "INSERT INTO $user (book, total) VALUES ('$title', $price)";
+
+if(mysqli_query($db, $update2)){
+		echo "<script type='text/javascript'>location.href = 'cart.php';</script>";
+} else{
+    echo "ERROR: Could not able to execute $update2. " . mysqli_error($db);
+}
 		
-				echo "<script type='text/javascript'>location.href = 'cart.php';</script>";
+			
 			
 		}
 		catch(Exception $e){
