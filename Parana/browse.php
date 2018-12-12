@@ -133,49 +133,51 @@
 
 
 <?php
-	$subject = $_POST['subject'];
-	$selection = $_POST['selection'];
-	$query = "SELECT * FROM books WHERE $selection = '$subject'";
+	session_start();
+	$subject = $_SESSION['subject'];
+
+	if ($subject == "ALL")
+		$query = "SELECT * FROM books";
+	else
+		$query = "SELECT * FROM books WHERE subject = '$subject'";
 	$result = mysqli_query($db, $query);
-	$rows = $result->num_rows;
+	$row = $result->num_rows;
 
-	if(isset($_POST['submit']) && $rows != 0) {
-		try {
-			$count=0;
-			$myarray = array();
-			while ($count < mysqli_num_fields($result))
-			{
-			     $fld = mysqli_fetch_field($result, $count);
+	if($row != 0) {
+		$count=0;
+		$myarray = array();
+		while ($count < mysqli_num_fields($result))
+		{
+		     $fld = mysqli_fetch_field($result, $count);
 
-			     $myarray[] = $fld->name;
+		     $myarray[] = $fld->name;
 
-			     $count++;
-			}
+		     $count++;
+		}
 
-			echo "<table style='border:1px solid #ccc;'>\n";
-			echo "<thead>\n";
+		echo "<table style='border:1px solid #ccc;'>\n";
+		echo "<thead>\n";
+		echo "<tr>\n";
+		foreach($myarray as $columnHead) {
+		    echo "<th>".$columnHead."</th>\n";
+		}
+		echo "</tr>\n";
+		echo "</thead>\n";
+		echo "<tbody>\n";
+		if (mysqli_num_rows($result) > 0) {
+		    while ($row = mysqli_fetch_assoc($result)) {
 			echo "<tr>\n";
-			foreach($myarray as $columnHead) {
-			    echo "<th>".$columnHead."</th>\n";
+			foreach($row as $td) {
+			    echo "<td><p>".$td."</p></td>";
 			}
 			echo "</tr>\n";
-			echo "</thead>\n";
-			echo "<tbody>\n";
-			if (mysqli_num_rows($result) > 0) {
-			    while ($row = mysqli_fetch_assoc($result)) {
-				echo "<tr>\n";
-				foreach($row as $td) {
-				    echo "<td>".$td."</td>";
-				}
-				echo "</tr>\n";
-			    }
-			}
-			echo "</tbody>\n";
-			echo "</table>";
+		    }
 		}
-		catch(Exception $e){
-			echo "<script>alert('Cannot find subject. Please try again.');</script>";
-		}
+		echo "</tbody>\n";
+		echo "</table>";
+	}
+	else {
+		echo "<script>alert('Cannot find subject. Please try again.');</script>";
 	}
 
 session_start();

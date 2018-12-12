@@ -8,6 +8,7 @@
   if ($db->connect_error) {
         die("Connection failed: " . $db->connect_error);
     }
+
 ?>
 
 <html>
@@ -65,7 +66,7 @@
 		<div class="form-inline form-signin">
 				<select name="selection" method='post'>
 				<option>All</option>		
-				<option>Author</option>
+				<optiomethon>Author</option>
 				<option>Title</option>
 				<option>ISBN</option>
 				</select></li>
@@ -89,19 +90,46 @@
 <div class="container-fluid text-center">    
   <div class="row content">
     <div class="col-sm-2 sidenav">
-      <p><a href="#">All</a></p>
-      <p><a href="#">Children</a></p>
-      <p><a href="#">Computer</a></p>
-      <p><a href="#">General</a></p>
-      <p><a href="#">Romance</a></p>
-      <p><a href="#">Sports</a></p>
-      <p><a href="#">Thrillers</a></p>
+	<form method='post'>
+		<button class="btn btn-lg btn-primary btn-block" name='all' type="submit">All</button>
+		<button class="btn btn-lg btn-primary btn-block" name='general' type="submit">General</button>
+		<button class="btn btn-lg btn-primary btn-block" name='fiction' type="submit">Fiction</button>
+		<button class="btn btn-lg btn-primary btn-block" name='children' type="submit">Children</button>
+		<button class="btn btn-lg btn-primary btn-block" name='science' type="submit">Science</button>
+		<button class="btn btn-lg btn-primary btn-block" name='computer' type="submit">Computer Science</button>
+	</form>
     </div>
+
+<?php
+	if(isset($_POST['all'])) {
+		$_SESSION['subject'] = "ALL";
+		header("Location:browse.php");
+	}
+	else if(isset($_POST['general'])) {
+		$_SESSION['subject'] = "GENERAL";
+		header("Location:browse.php");
+	}
+	else if(isset($_POST['fiction'])) {
+		$_SESSION['subject'] = "FICTION";
+		header("Location:browse.php");
+	}
+	else if(isset($_POST['children'])) {
+		$_SESSION['subject'] = "CHILDREN";
+		header("Location:browse.php");
+	}
+	else if(isset($_POST['science'])) {
+		$_SESSION['subject'] = "SCIENCE";
+		header("Location:browse.php");
+	}
+	else if(isset($_POST['computer'])) {
+		$_SESSION['subject'] = "COMPUTER SCIENCE";
+		header("Location:browse.php");
+	}
+
+?>
+
+
     <div class="col-sm-8 text-left"> 
-      
-
-
-
 <h1>Check out our limited edition book sets!</h1>
 	<div id="myCarousel" class="carousel slide" data-ride="carousel">
   <!-- Indicators -->
@@ -156,7 +184,8 @@
 </div>
 
 <footer class="container-fluid text-center">
-  <p>Footer Text</p>
+  <p>Footer Text</p>session_start();
+	$_SESSION['isbn'] = $_POST['isbn'];
 </footer>
 
 
