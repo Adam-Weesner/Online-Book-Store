@@ -33,7 +33,7 @@ $temp1 = mysqli_query($db, $sql);
 	$rows2 = $result6->num_rows;
 
 	session_start();
-	$_SESSION['userID'] = $user;
+	$_SESSION['userid'] = $user;
 
 	if(isset($_POST['submit']) && $rows != 0 && $rows2 != 0) {
 		try {

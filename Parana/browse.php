@@ -12,7 +12,7 @@
 
 <html>
 <head>
-  <title>Bootstrap Example</title>
+  <title>Parana Bookstore</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -34,6 +34,7 @@
   	</div>
     	<div class="collapse navbar-collapse" id="myNavbar">
         	<ul class="nav navbar-nav navbar-right">
+		<li><a href="cart.php"><span class="glyphicon glyphicon-shopping-cart"></span> View Cart </a></li>
         	<li><a href="personal.php"><span class="glyphicon glyphicon-wrench"></span> Edit Profile</a></li>
 		<li><a href="index.php"><span class="glyphicon glyphicon-log-out"></span> Sign Out</a></li>
       		</ul>
@@ -42,48 +43,39 @@
 </nav>
 
 
-
-
-
-
-
-
-
-
 <nav class="navbar navbar-inverse">
 	<div class="container-fluid">
-		<div class="navbar-header">
-      		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-       		<span class="icon-bar"></span>
-        	<span class="icon-bar"></span>    
-     		</button>
-      	</div>
-	<div class="collapse navbar-collapse" id="myNavbar"></div>
 		<ul class="nav navbar-nav">
-		<li><form class="form-inline" action="search.php">
+		<li><form class="form-inline" method="post">
 	
 		<div class="form-inline form-signin">
-				<select name="selection" method='post'>
-				<option>All</option>		
+				<select class="form-control" name="selection">	
+				<option>ISBN</option>
 				<option>Author</option>
 				<option>Title</option>
-				<option>ISBN</option>
 				</select></li>
 	<li><div class ="input-group">
 	<input type="text" class="form-control" placeholder="Search" name="search"></li>
 	
-	<div class="input-group-btn">
-		<button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
-	
+		<button name="searchButton" class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
 	</form>
 	</ul>
 
+
 	<ul class="nav navbar-nav navbar-right">
-        <li><a href="orderStatus.php"><span class="glyphicon glyphicon-send"></span> Order Status</a></li>
-	<li><a href="cart.php"><span class="glyphicon glyphicon-shopping-cart"></span> View Cart </a></li>
-      </ul>
-</div>
-</div>
+		<form class="form-inline" method='post'>
+			<div class="form-group">
+			<li><label for="subject" class="sr-only">Add ISBN to Cart:</label>
+					<input type="text" name="isbn" class="form-control" placeholder="ISBN" required="true"></li>
+			</div>
+			<div class="form-group">	
+			<li><button class="btn btn-lg btn-primary btn-block" name='add' type="submit">Add</button></li>
+			</div>
+			<div class="form-group">
+			<li><button class="btn btn-lg btn-primary btn-block" name='one' type="submit">1-Click Checkout</button></li>
+			</div>
+		</form>
+	</ul>
 </nav>
 
 <div class="container-fluid text-center">    
@@ -144,37 +136,26 @@
 	$row = $result->num_rows;
 
 	if($row != 0) {
-		$count=0;
-		$myarray = array();
-		while ($count < mysqli_num_fields($result))
-		{
-		     $fld = mysqli_fetch_field($result, $count);
+		echo "<table class='table'>
+			<tr>
+			<th scope='col'>ISBN</th>
+			<th scope='col'>Author</th>
+			<th scope='col'>Title</th>
+			<th scope='col'>Price</th>
+			<th scope='col'>Subject</th>
+			</tr>";
 
-		     $myarray[] = $fld->name;
-
-		     $count++;
-		}
-
-		echo "<table style='border:1px solid #ccc;'>\n";
-		echo "<thead>\n";
-		echo "<tr>\n";
-		foreach($myarray as $columnHead) {
-		    echo "<th>".$columnHead."</th>\n";
-		}
-		echo "</tr>\n";
-		echo "</thead>\n";
-		echo "<tbody>\n";
-		if (mysqli_num_rows($result) > 0) {
-		    while ($row = mysqli_fetch_assoc($result)) {
-			echo "<tr>\n";
-			foreach($row as $td) {
-			    echo "<td><p>".$td."</p></td>";
+			while($row3 = mysqli_fetch_array($result))
+			{
+			echo "<tr>";
+			echo "<td scope='row'>" . $row3['isbn'] . "</td>";
+			echo "<td scope='row'>" . $row3['author'] . "</td>";
+			echo "<td scope='row'>" . $row3['title'] . "</td>";
+			echo "<td scope='row'>" . $row3['price'] . "</td>";
+			echo "<td scope='row'>" . $row3['subject'] . "</td>";
+			echo "</tr>";
 			}
-			echo "</tr>\n";
-		    }
-		}
-		echo "</tbody>\n";
-		echo "</table>";
+			echo "</table>";
 	}
 	else {
 		echo "<script>alert('Cannot find subject. Please try again.');</script>";
@@ -217,6 +198,23 @@ if(mysqli_query($db, $update2)){
 		catch(Exception $e){
 		}
 	}
+
+$selection = $_POST['search'];
+	$subject = $_POST['selection'];
+	$query = "SELECT * FROM books WHERE $subject = '$selection'";
+	$result = mysqli_query($db, $query);
+	$rows = $result->num_rows;
+
+	if(isset($_POST['searchButton']) && $rows != 0) {
+		
+		session_start();
+		$_SESSION['subject'] = $selection;
+		$_SESSION['selection'] = $subject;
+
+		echo "<script type='text/javascript'>location.href = 'search.php';</script>";
+	} else if (isset($_POST['searchButton'])) {
+		echo "<script>alert('ERROR - Cannot find $selection in $subject');</script>";
+	}
 ?>
 
     
@@ -236,7 +234,6 @@ if(mysqli_query($db, $update2)){
 </div>
 
 <footer class="container-fluid text-center">
-  <p>Footer Text</p>
 </footer>
 </body>
 </html>

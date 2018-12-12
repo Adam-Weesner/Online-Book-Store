@@ -4,11 +4,17 @@
 <?php 
 	session_start();
 	$user = $_SESSION['userid'];
+
+
+  $db = new mysqli('localhost','root','root','bookstore');
+  if ($db->connect_error) {
+        die("Connection failed: " . $db->connect_error);
+    }
 ?>
 
 <html>
   <head>
-  <title>Bootstrap Example</title>
+  <title>Parana Bookstore</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -30,7 +36,8 @@
   	</div>
     	<div class="collapse navbar-collapse" id="myNavbar">
         	<ul class="nav navbar-nav navbar-right">
-		<li><a href="personal.php"><span class="glyphicon glyphicon-wrench"></span> Edit Profile</a></li>
+		<li><a href="cart.php"><span class="glyphicon glyphicon-shopping-cart"></span> View Cart </a></li>
+        	<li><a href="personal.php"><span class="glyphicon glyphicon-wrench"></span> Edit Profile</a></li>
 		<li><a href="index.php"><span class="glyphicon glyphicon-log-out"></span> Sign Out</a></li>
       		</ul>
 	</div>
@@ -38,48 +45,39 @@
 </nav>
 
 
-
-
-
-
-
-
-
-
 <nav class="navbar navbar-inverse">
 	<div class="container-fluid">
-		<div class="navbar-header">
-      		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-       		<span class="icon-bar"></span>
-        	<span class="icon-bar"></span>    
-     		</button>
-      	</div>
-	<div class="collapse navbar-collapse" id="myNavbar"></div>
 		<ul class="nav navbar-nav">
-		<li><form class="form-inline" action="search.php">
+		<li><form class="form-inline" method="post">
 	
 		<div class="form-inline form-signin">
-				<select name="selection" method='post'>
-				<option>All</option>		
+				<select class="form-control" name="selection">	
+				<option>ISBN</option>
 				<option>Author</option>
 				<option>Title</option>
-				<option>ISBN</option>
 				</select></li>
 	<li><div class ="input-group">
 	<input type="text" class="form-control" placeholder="Search" name="search"></li>
 	
-	<div class="input-group-btn">
-		<button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
-	
+		<button name="searchButton" class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
 	</form>
 	</ul>
 
+
 	<ul class="nav navbar-nav navbar-right">
-        <li><a href="orderStatus.php"><span class="glyphicon glyphicon-send"></span> Order Status</a></li>
-	<li><a href="cart.php"><span class="glyphicon glyphicon-shopping-cart"></span> View Cart </a></li>
-      </ul>
-</div>
-</div>
+		<form class="form-inline" method='post'>
+			<div class="form-group">
+			<li><label for="subject" class="sr-only">Add ISBN to Cart:</label>
+					<input type="text" name="isbn" class="form-control" placeholder="ISBN" required="true"></li>
+			</div>
+			<div class="form-group">	
+			<li><button class="btn btn-lg btn-primary btn-block" name='add' type="submit">Add</button></li>
+			</div>
+			<div class="form-group">
+			<li><button class="btn btn-lg btn-primary btn-block" name='one' type="submit">1-Click Checkout</button></li>
+			</div>
+		</form>
+	</ul>
 </nav>
 
 <div class="container-fluid text-center">    
@@ -125,13 +123,7 @@
     <div class="col-sm-8 text-left"> 
 
 <?php
-  $db = new mysqli('localhost','root','root','bookstore');
-  if ($db->connect_error) {
-        die("Connection failed: " . $db->connect_error);
-    }
-
-	
-	$query2 = "SELECT * FROM members WHERE userid = '$user'";
+	$query2 = "SELECT * FROM MemberList WHERE userid = '$user'";
 	$result2 = mysqli_query($db, $query2);
 	$row = mysqli_fetch_object($result2);
 
@@ -149,7 +141,23 @@
  
         echo "<script type='text/javascript'>location.href = 'home.php';</script>";
 	}
-	else {
+
+$selection = $_POST['search'];
+	$subject = $_POST['selection'];
+	$query = "SELECT * FROM books WHERE $subject = '$selection'";
+	$result = mysqli_query($db, $query);
+	$rows = $result->num_rows;
+
+	if(isset($_POST['searchButton']) && $rows != 0) {
+		
+		session_start();
+		$_SESSION['subject'] = $selection;
+		$_SESSION['selection'] = $subject;
+
+		echo "<script type='text/javascript'>location.href = 'search.php';</script>";
+	} else if (isset($_POST['searchButton'])) {
+		echo "<script>alert('ERROR - Cannot find $selection in $subject');</script>";
+	}
 	?>
 
 <head>
@@ -157,10 +165,9 @@
 	<title>Online Book Store</title>
 </head>
 
-<body class="text-center">
+<body>
 		<h1 class="h3 mb-3 font-weight-normal"><font color="white">Edit Your Information</font></h1>
 
-	<div class='container welcome'>
       	<form class='form-signin' method='post'>
 		<label for="fName" class="sr-only">First Name</label>
 		<input type="text" placeholder="First Name" value="<?php echo "$row->fName"; ?>" name="fName" class="form-control" required="true"><br>
@@ -190,8 +197,7 @@
 		<input type="text" placeholder="Password" value="<?php echo "$row->password"; ?>" name="password" class="form-control" required="true" ><br><br>
 
 	<button class="btn btn-lg btn-primary btn-block" name='submit' type="submit">Confirm</button>
-      	</form>		
-	</div>
+      	</form>
     
       <hr>
       <h3></h3>
@@ -209,12 +215,7 @@
 </div>
 
 <footer class="container-fluid text-center">
-  <p>Footer Text</p>
 </footer>
 </body>
-<?php
-	}
-$db->close();
-?>
 </body>
 </html>
